@@ -2,12 +2,22 @@ import { useState } from 'react'
 import ProjectsSidebar from './Components/ProjectsSidebar'
 import NewProject from './Components/NewProject'
 import NoProjectSelected from './Components/NoProjectSelected'
+import SelectedProject from './Components/SelectedProject'
 
 const App = () => {
   const [projectsState, setProjectsState] = useState({
     selectedProjectId: undefined,
     projects: []
   });
+
+  const handleSelectProject = (id) => {
+    setProjectsState(prevState => {
+      return {
+        ...prevState,
+        selectedProjectId: id,
+      };
+    });
+  }
 
   const handleStartAddProject = () => {
     setProjectsState(prevState => {
@@ -43,7 +53,9 @@ const App = () => {
     });
   }
   
-  let content;
+  const selectedProject = projectsState.projects.find(project => project.id === projectsState.selectedProjectId);
+
+  let content = <SelectedProject project={selectedProject}/>;
 
   if(projectsState.selectedProjectId === null) {
     content = <NewProject onAdd={handleAddProject} onCancel={handleCancelAddProject}/>
@@ -56,6 +68,7 @@ const App = () => {
     <ProjectsSidebar 
       onStartAddProject={handleStartAddProject} 
       projects={projectsState.projects}
+      onSelectProject = {handleSelectProject}
     />
     {content}
     </main>
